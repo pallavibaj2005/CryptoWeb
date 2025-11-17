@@ -1,187 +1,138 @@
-🚀 CryptoWeb Backend – Spring Boot Crypto Trading API (CoinGecko Integrated)
+# 🚀 CryptoWeb Backend – Advanced Spring Boot Crypto Trading API (CoinGecko Integrated)
 
-CryptoWeb is a Spring Boot–based cryptocurrency trading backend engineered to simulate a full trading ecosystem.
-It integrates live market data from CoinGecko, manages a persistent portfolio, records transactions, and exposes REST APIs for buy/sell, market trends, and historical data.
+CryptoWeb is a powerful and modular Spring Boot backend that simulates a complete cryptocurrency trading ecosystem. Leveraging real-time data from CoinGecko, it offers robust portfolio management, accurate transaction histories, and rich RESTful APIs—making it a perfect foundation for crypto web apps, learning projects, or fintech experiments.
 
-The system follows a clean Model–Repository–Service–Controller architecture, supporting both real-time API calls and database-backed portfolio management.
+---
 
-🔥 Key Features
-✅ Live Crypto Data (CoinGecko API)
+## 🌟 Feature Highlights
 
-Fetch top 10 coins by market cap
+### 📈 Real-Time Market Data
+- **Top 10 Cryptos:** Instantly fetch the top 10 coins by market cap.
+- **Price Charts:** Retrieve interactive 90-day historical price data per coin.
+- **Smart Coin Resolution:** Automatically map common symbols/names to exact CoinGecko IDs (250+ crypto mappings preloaded).
+- **Live Price Feeds:** Accurate buy/sell executions based on real market prices.
 
-Fetch 90-day historical price chart
+### 💱 Trading Engine
+- **Buy/Sell Logic:** Securely buy & sell cryptocurrencies. All trades update the portfolio and recalculate weighted averages (cost basis).
+- **P/L Calculation:** Integrated profit/loss logic as part of every sale.
+- **Persistent Transactions:** Complete record of every trade—backed by a transactional database.
+- **Portfolio Consistency:** Never lose track of holdings, average prices, or history.
 
-Auto-resolve coin name or symbol to CoinGecko ID
+### 💼 User Portfolio & Transaction Tracking
+- **Portfolio View:** Instantly view your complete crypto holdings with up-to-date market values.
+- **Transaction History:** Audit all buys/sells with detailed logs.
+- **Database-Driven:** Powered by JPA (Hibernate) for real persistence—compatible with H2 for dev, or MySQL for production.
 
-Preloads 250+ crypto mappings at startup
+### 🛠️ Utility APIs & Error Handling
+- **Test Endpoints:** Rapid health check via `/api/trader/test`.
+- **Auto-Resolve Symbols:** No worries about ticker confusion.
+- **Intelligent Error Handling:** Clear, user-friendly error feedback for invalid coins or bad requests.
 
-✅ Trading Engine
+---
 
-Buy coins (updates average price + quantity)
+## 🧱 Clean Project Architecture
 
-Sell coins (calculates P/L)
-
-Stores every trade as a database transaction
-
-Maintains persistent user portfolio
-
-✅ Portfolio & Transactions
-
-View stored portfolio (JPA)
-
-View full transaction history
-
-Fully database-driven (Portfolio + Transaction tables)
-
-✅ Utility Endpoints
-
-Test API /api/trader/test
-
-Auto-symbol resolution system
-
-Error handling for invalid coins
-
-🧱 Project Architecture
+```
 src/main/java/com/crypto/
 │
 ├── controller/
-│   └── TraderController.java
+│   └── TraderController.java              # Main API logic
 │
 ├── model/
-│   ├── Crypto.java
-│   ├── Portfolio.java
-│   └── Transaction.java
+│   ├── Crypto.java                        # Market data model
+│   ├── Portfolio.java                     # User portfolio entity
+│   └── Transaction.java                   # Trade log entity
 │
 ├── repository/
-│   ├── CryptoRepository.java
-│   ├── PortfolioRepository.java
-│   └── TransactionRepository.java
+│   ├── CryptoRepository.java              # Market data persistence
+│   ├── PortfolioRepository.java           # Portfolio storage
+│   └── TransactionRepository.java         # Transaction log
 │
 ├── service/
-│   ├── BuyService.java
-│   ├── SellService.java
-│   ├── PortfolioService.java
-│   └── TransactionService.java
+│   ├── BuyService.java                    # Buy logic
+│   ├── SellService.java                   # Sell logic
+│   ├── PortfolioService.java              # Portfolio handling
+│   └── TransactionService.java            # Transaction operations
+```
 
-📡 REST API Endpoints
-📍 Trading API (Live API + Calculations)
+---
 
-Base URL: /api/trader
+## 📡 REST API Endpoints
 
-Test Backend
-GET /api/trader/test
+> **Base Path:** `/api/trader`
 
-Buy Crypto
-POST /api/trader/buy/{symbol}/{amount}
+- `GET  /test`                 : Health check for backend
+- `POST /buy/{symbol}/{amt}`   : Purchase crypto at real-time price
+- `POST /sell/{symbol}/{amt}`  : Sell crypto, see P/L and update holdings
+- `GET  /portfolio`            : Get live snapshot of your crypto portfolio
+- `GET  /transactions`         : See your complete transaction history
+- `GET  /top10`                : List top 10 coins by market cap
+- `GET  /history/{symbol}`     : Fetch historical price chart (90 days)
 
-Sell Crypto
-POST /api/trader/sell/{symbol}/{amount}
+---
 
-Get User Portfolio (in-memory)
-GET /api/trader/portfolio
+## 🧠 Core Business Logic
 
-Get Transactions (in-memory)
-GET /api/trader/transactions
+### 🟢 Buy Crypto
+- Map symbol → real CoinGecko ID
+- Fetch real-time price
+- Update portfolio: increase quantity & recalculate average buy price
+- Store **BUY** transaction in DB
 
-Top 10 Cryptos (Live Market Data)
-GET /api/trader/top10
+### 🔴 Sell Crypto
+- Validate sufficient holdings
+- Fetch real-time price
+- Calculate profit/loss (P/L), update average buy price
+- Update portfolio: decrease quantity
+- Store **SELL** transaction in DB
 
-90-Day Price History
-GET /api/trader/history/{symbol}
+---
 
-🧠 Business Logic Overview
-🔹 Buy Flow
+## 🗄️ Database Entity Models
 
-Resolve coin ID → fetch real price
+| Entity      | Key Columns        | Description                                    |
+|-------------|-------------------|------------------------------------------------|
+| **Crypto**      | symbol (PK), name, currentPrice | Market price & meta info              |
+| **Portfolio**   | symbol (PK), quantity, avgBuyPrice | User’s holdings & cost basis     |
+| **Transaction** | id (PK), type (BUY/SELL), symbol, quantity, price, dateTime | Trade log  |
 
-Update Portfolio:
+---
 
-Increase quantity
+## ⚙️ Tech Stack
 
-Recalculate average buy price
+- **Java 17+**
+- **Spring Boot** (RESTful microservices)
+- **JPA + Hibernate** (ORM/database)
+- **CoinGecko API** (Public crypto pricing)
+- **RestTemplate** (API calls)
+- **H2 / MySQL** (easy switch—configurable)
 
-Store Transaction (BUY)
+---
 
-🔹 Sell Flow
+## ▶️ Getting Started
 
-Validate holdings
+Clone, run, and access the backend locally:
 
-Fetch real price
-
-Calculate P/L
-
-Update Portfolio
-
-Store Transaction (SELL)
-
-🗄 Database Entities
-Crypto
-
-symbol (PK)
-
-name
-
-currentPrice
-
-Portfolio
-
-symbol (PK)
-
-quantity
-
-avgBuyPrice
-
-Transaction
-
-id (PK)
-
-type (BUY/SELL)
-
-symbol
-
-quantity
-
-price
-
-dateTime
-
-⚙️ Technologies Used
-
-Java 17+
-
-Spring Boot
-
-JPA + Hibernate
-
-CoinGecko Public APIs
-
-RestTemplate
-
-H2 / MySQL (Based on configuration)
-
-▶️ Running the Project
+```bash
 mvn spring-boot:run
+```
+Server runs at: [http://localhost:8080](http://localhost:8080)
 
+---
 
-Backend runs at:
+## 🎯 Why CryptoWeb?
 
-http://localhost:8080
+- **Production-grade trading logic**
+- **Seamless integration of live market data**
+- **Robust JPA modeling for persistence & analytics**
+- **Clean, modular Java architecture**
+- **Perfect for learning, prototyping, teaching fintech, or powering client apps**
 
-🎯 Purpose of This Project
+---
 
-This backend showcases:
+## 💬 Feedback / Contribution
 
-Real-world crypto data integration
+Your contributions, issues, and ideas are welcome!  
+Feel free to fork, star, or submit pull requests.
 
-Full trading logic (buy/sell/portfolio management)
-
-Clean modular architecture
-
-REST API development best practices
-
-JPA entity modeling & persistence
-
-Finance-oriented backend logic
-
-End-to-end trading simulation
+---
