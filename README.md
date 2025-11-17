@@ -8,7 +8,6 @@ CryptoWeb is a powerful and modular Spring Boot backend that simulates a complet
 
 ### 📈 Real-Time Market Data
 - **Top 10 Cryptos:** Instantly fetch the top 10 coins by market cap.
-- **Price Charts:** Retrieve interactive 90-day historical price data per coin.
 - **Smart Coin Resolution:** Automatically map common symbols/names to exact CoinGecko IDs (250+ crypto mappings preloaded).
 - **Live Price Feeds:** Accurate buy/sell executions based on real market prices.
 
@@ -22,11 +21,6 @@ CryptoWeb is a powerful and modular Spring Boot backend that simulates a complet
 - **Portfolio View:** Instantly view your complete crypto holdings with up-to-date market values.
 - **Transaction History:** Audit all buys/sells with detailed logs.
 - **Database-Driven:** Powered by JPA (Hibernate) for real persistence—compatible with H2 for dev, or MySQL for production.
-
-### 🛠️ Utility APIs & Error Handling
-- **Test Endpoints:** Rapid health check via `/api/trader/test`.
-- **Auto-Resolve Symbols:** No worries about ticker confusion.
-- **Intelligent Error Handling:** Clear, user-friendly error feedback for invalid coins or bad requests.
 
 ---
 
@@ -57,19 +51,6 @@ src/main/java/com/crypto/
 
 ---
 
-## 📡 REST API Endpoints
-
-> **Base Path:** `/api/trader`
-
-- `GET  /test`                 : Health check for backend
-- `POST /buy/{symbol}/{amt}`   : Purchase crypto at real-time price
-- `POST /sell/{symbol}/{amt}`  : Sell crypto, see P/L and update holdings
-- `GET  /portfolio`            : Get live snapshot of your crypto portfolio
-- `GET  /transactions`         : See your complete transaction history
-- `GET  /top10`                : List top 10 coins by market cap
-- `GET  /history/{symbol}`     : Fetch historical price chart (90 days)
-
----
 
 ## 🧠 Core Business Logic
 
@@ -88,30 +69,19 @@ src/main/java/com/crypto/
 
 ---
 
-## 🗄️ Database Entity Models
-
-| Entity      | Key Columns        | Description                                    |
-|-------------|-------------------|------------------------------------------------|
-| **Crypto**      | symbol (PK), name, currentPrice | Market price & meta info              |
-| **Portfolio**   | symbol (PK), quantity, avgBuyPrice | User’s holdings & cost basis     |
-| **Transaction** | id (PK), type (BUY/SELL), symbol, quantity, price, dateTime | Trade log  |
-
 ---
 
 ## ⚙️ Tech Stack
 
 - **Java 17+**
 - **Spring Boot** (RESTful microservices)
-- **JPA + Hibernate** (ORM/database)
+- **JPA + Hibernate** (database)
 - **CoinGecko API** (Public crypto pricing)
 - **RestTemplate** (API calls)
-- **H2 / MySQL** (easy switch—configurable)
+- **MySQL** 
 
 ---
 
-## ▶️ Getting Started
-
-Clone, run, and access the backend locally:
 
 ```bash
 mvn spring-boot:run
